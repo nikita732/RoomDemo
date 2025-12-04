@@ -10,6 +10,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -72,8 +74,6 @@ fun ScreenSetup(modifier: Modifier = Modifier, viewModel: MainViewModel) {
         viewModel = viewModel
     )
 }
-
-
 
 @Composable
 fun MainScreen(
@@ -151,8 +151,24 @@ fun MainScreen(
                 Text("Clear")
             }
         }
+
+        LazyColumn(
+            Modifier
+                .fillMaxWidth()
+                .padding(10.dp)
+        ) {
+            val list = if (searching) searchResults else allProducts
+            item {
+                TitleRow(head1 = "ID", head2 = "Product", head3 = "Quantity")
+            }
+            items(list) { product ->
+                ProductRow(id = product.id, name = product.productName,
+                    quantity = product.quantity)
+            }
+        }
     }
 }
+
 @Composable
 fun TitleRow(head1: String, head2: String, head3: String) {
     Row(
