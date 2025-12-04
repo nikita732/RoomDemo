@@ -72,6 +72,9 @@ fun ScreenSetup(modifier: Modifier = Modifier, viewModel: MainViewModel) {
         viewModel = viewModel
     )
 }
+
+
+
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
@@ -92,25 +95,64 @@ fun MainScreen(
     }
 
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        modifier = modifier
+            .fillMaxWidth()
     ) {
-        Text(
-            text = "Product Inventory",
-            style = MaterialTheme.typography.headlineLarge,
-            modifier = Modifier.padding(bottom = 24.dp)
+        CustomTextField(
+            title = "Product Name",
+            textState = productName,
+            onTextChange = onProductTextChange,
+            keyboardType = KeyboardType.Text
         )
-
-        Text(
-            text = "",
-            style = MaterialTheme.typography.bodyLarge
+        CustomTextField(
+            title = "Quantity",
+            textState = productQuantity,
+            onTextChange = onQuantityTextChange,
+            keyboardType = KeyboardType.Number
         )
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp)
+        ) {
+            Button(onClick = {
+                if (productQuantity.isNotEmpty()) {
+                    viewModel.insertProduct(
+                        Product(
+                            id = 0, // Будет сгенерирован автоматически
+                            productName = productName,
+                            quantity = productQuantity.toInt()
+                        )
+                    )
+                    searching = false
+                }
+            }) {
+                Text("Add")
+            }
+            Button(onClick = {
+                searching = true
+                viewModel.findProduct(productName)
+            }) {
+                Text("Search")
+            }
+            Button(onClick = {
+                searching = false
+                viewModel.deleteProduct(productName)
+            }) {
+                Text("Delete")
+            }
+            Button(onClick = {
+                searching = false
+                productName = ""
+                productQuantity = ""
+            }) {
+                Text("Clear")
+            }
+        }
     }
 }
-
 @Composable
 fun TitleRow(head1: String, head2: String, head3: String) {
     Row(
