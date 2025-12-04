@@ -22,6 +22,10 @@ import com.example.roomdemo.ui.theme.RoomDemoTheme
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.platform.LocalContext
+import com.example.roomdemo.MainViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,9 +34,21 @@ class MainActivity : ComponentActivity() {
         setContent {
             RoomDemoTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    ScreenSetup(
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    val owner = LocalViewModelStoreOwner.current
+                    owner?.let {
+                        val viewModel: MainViewModel = viewModel(
+                            it,
+                            "MainViewModel",
+                            MainViewModelFactory(
+                                LocalContext.current.applicationContext
+                                        as Application
+                            )
+                        )
+                        ScreenSetup(
+                            modifier = Modifier.padding(innerPadding),
+                            viewModel = viewModel
+                        )
+                    }
                 }
             }
         }
@@ -40,7 +56,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ScreenSetup(modifier: Modifier = Modifier) {
+fun ScreenSetup(modifier: Modifier = Modifier, viewModel: MainViewModel? = null) {
     MainScreen(modifier)
 }
 
@@ -60,7 +76,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
         )
 
         Text(
-            text = "Здесь будет интерфейс управления товарами",
+            text = "",
             style = MaterialTheme.typography.bodyLarge
         )
     }
