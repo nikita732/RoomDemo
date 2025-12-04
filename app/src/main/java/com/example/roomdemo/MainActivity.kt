@@ -2,6 +2,10 @@ package com.example.roomdemo
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
@@ -68,7 +72,6 @@ fun ScreenSetup(modifier: Modifier = Modifier, viewModel: MainViewModel) {
         viewModel = viewModel
     )
 }
-
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
@@ -76,6 +79,18 @@ fun MainScreen(
     searchResults: List<Product>,
     viewModel: MainViewModel
 ) {
+    var productName by remember { mutableStateOf("") }
+    var productQuantity by remember { mutableStateOf("") }
+    var searching by remember { mutableStateOf(false) }
+
+    val onProductTextChange = { text : String ->
+        productName = text
+    }
+
+    val onQuantityTextChange = { text : String ->
+        productQuantity = text
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
