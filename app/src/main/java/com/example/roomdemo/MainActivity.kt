@@ -8,7 +8,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -56,12 +57,25 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ScreenSetup(modifier: Modifier = Modifier, viewModel: MainViewModel? = null) {
-    MainScreen(modifier)
+fun ScreenSetup(modifier: Modifier = Modifier, viewModel: MainViewModel) {
+    val allProducts by viewModel.allProducts.observeAsState(listOf())
+    val searchResults by viewModel.searchResults.observeAsState(listOf())
+
+    MainScreen(
+        modifier = modifier,
+        allProducts = allProducts,
+        searchResults = searchResults,
+        viewModel = viewModel
+    )
 }
 
 @Composable
-fun MainScreen(modifier: Modifier = Modifier) {
+fun MainScreen(
+    modifier: Modifier = Modifier,
+    allProducts: List<Product>,
+    searchResults: List<Product>,
+    viewModel: MainViewModel
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -159,7 +173,7 @@ fun CustomTextField(
 @Composable
 fun PreviewMainScreen() {
     RoomDemoTheme {
-        ScreenSetup()
+        ScreenSetup(modifier = Modifier, viewModel = MainViewModel(Application()))
     }
 }
 
